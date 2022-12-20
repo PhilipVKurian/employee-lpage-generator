@@ -6,10 +6,7 @@ employee types under the roles: Manager, Engineer, and Intern.
 
 ## Table Of Contents
 ->[Usage](#Usage)  
-->[Contribute](#Contribute)  
 ->[Testing](#Testing)  
-->[License](#License)  
-->[Contact](#Contact)  
 
 ## Usage
 https://drive.google.com/file/d/12gEFOO-CBGN7_OCHLzUT5rx7zG7FHoex/view
