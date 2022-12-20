@@ -2,10 +2,11 @@ const Manager = require('./lib/Manager');
 const Intern = require('./lib/Intern');
 const Engineer = require('./lib/Engineer');
 const inquirer = require('inquirer');
+const fs = require("fs");
 let engineers = [];
 let interns = [];
 let manager = [];
-
+let htmlsite = [];
 //starts the program
 promptManager();
 
@@ -227,6 +228,7 @@ async function promptManager() {
         let currentEngineers = [];
         let currentInterns = [];
         console.log(engineers.length);
+        
 
         engineers.forEach((data) => {
             currentEngineers.push(new Engineer(data.engineerName, data.engineerId, data.engineerEmail, data.engineerGitHub))
@@ -235,17 +237,95 @@ async function promptManager() {
         interns.forEach((data) => {
             currentInterns.push(new Intern(data.internName, data.internId, data.internEmail, data.school))
         })
-        console.log("current Manager is: ") 
-        console.log(newmanager);
-        console.log("current Engineers are: ")   
-        console.log(currentEngineers[0].getRole());
-        console.log(currentEngineers.length)
-        console.log("Current interns are: ")
-        console.log(currentInterns);
+        createHTML(newmanager,currentEngineers, currentInterns);
+    }
 
+    function createHTML(newmanager, currentEngineers, currentInterns){
+        let head = `
+        <!DOCTYPE html>
+        <html lang="en">
+            <head style= "background-color: red; ">
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                <title>Employees</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+                <script src="https://kit.fontawesome.com/411e09558c.js" crossorigin="anonymous"></script>
+                <link href="./assets/styles/style.css" rel="stylesheet">
+            </head>
+            <body>
+                <div class="box">
+                    <div class="card" style="max-width: fitcontent; max-height: fit-content;">
+                    </header>
+                    <button class="card-header-icon dropdown is-hoverable" aria-label="more options" style="max-width: fitcontent; max-height: fit-content;">
+                        <img src="https://www.pngitem.com/pimgs/m/3-32856_transparent-brain-png-png-download.png" style="width: 2cm; height: 2cm;"></img>
+                        <p>Manager: `+newmanager.getName()+`</p>
+                        <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+                            <div class="dropdown-content">
+                            <div class="dropdown-item">                              
+                                <p>ID: `+newmanager.getID()+`</p>
+                                <p>Office: `+newmanager.officeNumber+`</p>                                                                  
+                            </div>
+                            </div>
+                        </div>
+                    </button>
+                    </div>                
+        `            
+        htmlsite.push(head);
+
+        if(engineers.length>0){
+
+            currentEngineers.forEach((engineer)=>{
+                let engineerSection = `
+                <div class="card" style="max-width: fitcontent; max-height: fit-content;">
+                        </header>
+                        <button class="card-header-icon dropdown is-hoverable" aria-label="more options" style="max-width: fitcontent; max-height: fit-content;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Gear-icon-transparent-background.png" style="width: 2cm; height: 2cm;"></img>
+                            <p>Engineer: `+engineer.getName()+`</p>
+                            <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+                                <div class="dropdown-content">
+                                <div class="dropdown-item">                              
+                                    <p>ID: `+engineer.getID()+`</p>
+                                    <p> <a href="https://github.com/`+engineer.getGitHub()+`">GitHub</a></p>                                                                  
+                                </div>
+                                </div>
+                            </div>
+                        </button>
+                </div>
+                `
+                htmlsite.push(engineerSection);
+            })
+        }
+        if(interns.length > 0){
+            currentInterns.forEach((intern) =>{
+                let internSection = `
+                <div class="card" style="max-width: fitcontent; max-height: fit-content;">
+                        </header>
+                        <button class="card-header-icon dropdown is-hoverable" aria-label="more options" style="max-width: fitcontent; max-height: fit-content;">
+                            <img src="https://thumbs.dreamstime.com/b/handshake-vector-icon-transparent-background-linear-handshake-vector-outline-icon-transparent-background-high-quality-linear-130123566.jpg" style="width: 2cm; height: 2cm;"></img>
+                            <p>Intern: `+intern.getName()+`</p>
+                            <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+                                <div class="dropdown-content">
+                                <div class="dropdown-item">                              
+                                    <p>ID: `+intern.getID()+`</p>
+                                    <p>School: `+intern.getSchool()+`</p>                                                                  
+                                </div>
+                                </div>
+                            </div>
+                        </button>
+                </div>
+                `
+                htmlsite.push(internSection);
+            })
+        }           
+
+        fs.writeFile("./dist/team.html", htmlsite.join(""), (err) => {
+            if(err){
+                console.log(err);
+            }else{
+                console.log("success page generated in /dist")
+            }
+        })
     }
 
 }
-
-
-
